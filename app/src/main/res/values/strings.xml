@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Waluty</string>
+    <string name="currency">Currency</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="settings">Settings</string>
+    <string name="send_notification_if_usd_course_won_t_be_in_range">Send notification if USD course won\'t be in range:</string>
+</resources>
