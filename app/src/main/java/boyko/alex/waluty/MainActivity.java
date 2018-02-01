@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    //Musiałem sobie policzyć na kalkulatorze ile to jest. Najlepiej dopisać w komentarzu ile to jest,
+    //albo zapisać to w takiej formie: 12 * 60 * 60 * 1000 i od razu widać, że to jest 12h.
     private final long PERIOD = 3600000 * 12;
 
     private RecyclerView recyclerView;
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        //Do bindowania widoków najlepiej użyć jakieś biblioteki, która wyelimuje konieczność pisania zdębnego kodu (tzw. boilerplate code).
+        //np. Butterknife albo Android annotations
         recyclerView = findViewById(R.id.recycler_view);
         progressBar = findViewById(R.id.progress_bar);
         title = findViewById(R.id.title);
@@ -86,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://api.nbp.pl/api/exchangerates/tables/C";
 
+        //Najlepiej swojego requesta napisać, żeby zwracał od razu listę obiektów typu Currency.
         JsonArrayRequest req = new JsonArrayRequest(url,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -102,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                 setElementsVisibility(false);
             }
         });
+        //Dobrą praktyką jest cancelowanie requestów w onStop. W dokumentacji Valley jest nawet to napisane, dodać tag do requestu i potem go cancelować.
+        //Jeśli byś wywoływał requesty z Fragmentu, to po zamknięciu apki fragment.getActivity() mogłoby zwrócić null i wtedy byś miał NPE.
 
         queue.add(req);
     }
@@ -109,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Currency> parseResponse(JSONArray response) {
         ArrayList<Currency> currencies = new ArrayList<>();
         try {
+            //Do parsowania takich rzeczy służą biblioteki, np. Gson. Activity nie powinno się zajmować parsowaniem niczego.
             JSONArray currenciesJSONArray = response.getJSONObject(0).getJSONArray("rates");
             for (int i = 0; i < currenciesJSONArray.length(); i++) {
                 JSONObject jsonObject = currenciesJSONArray.getJSONObject(i);
@@ -142,13 +150,15 @@ public class MainActivity extends AppCompatActivity {
         JobInfo jobInfo;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             jobInfo = new JobInfo.Builder(11111, componentName)
-                    .setMinimumLatency(PERIOD)
+                    .setMinimumLatency(PERIOD)//to jest tylko delay, dla api >= 24 nie ustawiasz w ogóle okresu!
                     .build();
         } else {
             jobInfo = new JobInfo.Builder(11111, componentName)
                     .setPeriodic(PERIOD)
                     .build();
         }
+        //Do job info można by było dodać setPersisted(true) to po restarcie urządzenia serwis dalej by się odpalał.
+        //W twoim rozwiązaniu po restarcie trzeba odpalić apkę, żeby znowu ustawił się ten serwis.
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(jobInfo);
     }
