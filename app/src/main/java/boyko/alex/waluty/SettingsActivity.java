@@ -44,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
                     double fromValue = Double.valueOf(from.getText().toString());
                     double toValue = Double.valueOf(to.getText().toString());
 
+                    //Za pierwszym razem to się nie zapisze, bo toValue będzie zero. A from przestawiasz w pierwszej kolejnośći.
                     if (fromValue > toValue) {
                         to.setError("Error");
                     } else {
@@ -54,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        //Ten TextWatcher jest dokładnie taki sam jak ten wyżej. Można by było wykorzystać jeden obiekt jako listener do dwóch EditTextów.
         to.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

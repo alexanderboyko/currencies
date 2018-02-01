@@ -59,6 +59,7 @@ public class CurrencyService extends JobService {
                             e.printStackTrace();
                             jobFinished(jobParameters, true);
                         }
+                        //3 razy powtarzasz jobFinished(jobParameters, true); a wystarczyłoby w tej linijce dać raz.
                     }
                 },
                 new Response.ErrorListener() {
